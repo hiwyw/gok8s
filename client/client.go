@@ -5,8 +5,10 @@ import (
 	"reflect"
 
 	"k8s.io/apimachinery/pkg/api/meta"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 
@@ -40,6 +42,11 @@ func New(config *rest.Config, options Options) (Client, error) {
 		}
 	}
 
+	dynamicClient, err := dynamic.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &client{
 		typedClient: typedClient{
 			cache: clientCache{
@@ -51,34 +58,64 @@ func New(config *rest.Config, options Options) (Client, error) {
 			},
 			paramCodec: runtime.NewParameterCodec(options.Scheme),
 		},
+
+		unstructuredClient: unstructuredClient{
+			client:     dynamicClient,
+			restMapper: options.Mapper,
+		},
 	}, nil
 }
 
 var _ Client = &client{}
 
 type client struct {
-	typedClient typedClient
+	typedClient        typedClient
+	unstructuredClient unstructuredClient
 }
 
 func (c *client) Create(ctx context.Context, obj runtime.Object) error {
-	return c.typedClient.Create(ctx, obj)
+	_, ok := obj.(*unstructured.Unstructured)
+	if ok == false {
+		return c.typedClient.Create(ctx, obj)
+	} else {
+		return c.unstructuredClient.Create(ctx, obj)
+	}
 }
 
 func (c *client) Update(ctx context.Context, obj runtime.Object) error {
-
-	return c.typedClient.Update(ctx, obj)
+	_, ok := obj.(*unstructured.Unstructured)
+	if ok == false {
+		return c.typedClient.Update(ctx, obj)
+	} else {
+		return c.unstructuredClient.Update(ctx, obj)
+	}
 }
 
 func (c *client) Delete(ctx context.Context, obj runtime.Object, opts ...DeleteOptionFunc) error {
-	return c.typedClient.Delete(ctx, obj, opts...)
+	_, ok := obj.(*unstructured.Unstructured)
+	if ok == false {
+		return c.typedClient.Delete(ctx, obj, opts...)
+	} else {
+		return c.unstructuredClient.Delete(ctx, obj, opts...)
+	}
 }
 
 func (c *client) Get(ctx context.Context, key ObjectKey, obj runtime.Object) error {
-	return c.typedClient.Get(ctx, key, obj)
+	_, ok := obj.(*unstructured.Unstructured)
+	if ok == false {
+		return c.typedClient.Get(ctx, key, obj)
+	} else {
+		return c.unstructuredClient.Get(ctx, key, obj)
+	}
 }
 
 func (c *client) List(ctx context.Context, opts *ListOptions, obj runtime.Object) error {
-	return c.typedClient.List(ctx, opts, obj)
+	_, ok := obj.(*unstructured.Unstructured)
+	if ok == false {
+		return c.typedClient.List(ctx, opts, obj)
+	} else {
+		return c.unstructuredClient.List(ctx, opts, obj)
+	}
 }
 
 func (c *client) Status() StatusWriter {
@@ -92,5 +129,10 @@ type statusWriter struct {
 var _ StatusWriter = &statusWriter{}
 
 func (sw *statusWriter) Update(ctx context.Context, obj runtime.Object) error {
-	return sw.client.typedClient.UpdateStatus(ctx, obj)
+	_, ok := obj.(*unstructured.Unstructured)
+	if ok == false {
+		return sw.client.typedClient.UpdateStatus(ctx, obj)
+	} else {
+		return sw.client.unstructuredClient.UpdateStatus(ctx, obj)
+	}
 }

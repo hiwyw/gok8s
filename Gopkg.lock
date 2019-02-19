@@ -388,10 +388,11 @@
 
 [[projects]]
   branch = "release-10.0"
-  digest = "1:7996082942ab61f13996728976a80c2d588dee7209904841ee8d7680b22ad9e9"
+  digest = "1:956d4840b5e246070e1977ff49034461cfb5ae868ff80f4c04a14c7aa8229953"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
+    "dynamic",
     "kubernetes",
     "kubernetes/scheme",
     "kubernetes/typed/admissionregistration/v1alpha1",
@@ -502,6 +503,7 @@
     "k8s.io/apimachinery/pkg/api/errors",
     "k8s.io/apimachinery/pkg/api/meta",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
+    "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured",
     "k8s.io/apimachinery/pkg/fields",
     "k8s.io/apimachinery/pkg/labels",
     "k8s.io/apimachinery/pkg/runtime",
@@ -512,6 +514,7 @@
     "k8s.io/apimachinery/pkg/util/wait",
     "k8s.io/apimachinery/pkg/watch",
     "k8s.io/client-go/discovery",
+    "k8s.io/client-go/dynamic",
     "k8s.io/client-go/kubernetes",
     "k8s.io/client-go/kubernetes/scheme",
     "k8s.io/client-go/kubernetes/typed/core/v1",

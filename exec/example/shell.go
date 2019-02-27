@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 
 	"github.com/zdnscloud/gok8s/client/config"
 	"github.com/zdnscloud/gok8s/exec"
@@ -12,9 +13,7 @@ import (
 func main() {
 	r, w := io.Pipe()
 	cmd := exec.Cmd{
-		Path: "/bin/sh",
-		//Args: []string{"-c", "echo what a fuck; sleep 25"},
-		//Path:   "/bin/sh",
+		Path:   "/bin/sh",
 		Stdin:  r,
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,
@@ -44,7 +43,7 @@ func main() {
 		}
 	}()
 
-	if err := e.RunCmd(pod, cmd); err != nil {
+	if err := e.RunCmd(pod, cmd, 30*time.Second); err != nil {
 		fmt.Printf("run cmd failed:%s\n", err.Error())
 	}
 }

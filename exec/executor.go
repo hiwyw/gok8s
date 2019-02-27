@@ -2,6 +2,7 @@ package exec
 
 import (
 	"context"
+	"errors"
 	"io"
 	"time"
 
@@ -16,6 +17,14 @@ import (
 	"github.com/zdnscloud/gok8s/client"
 	"github.com/zdnscloud/gok8s/controller"
 	"github.com/zdnscloud/gok8s/predicate"
+)
+
+var (
+	errCmdTimeout = errors.New("pod isn't ready, cmd timeout")
+)
+
+var (
+	executorLanchedPodMark = "zcloud-executor"
 )
 
 type Executor struct {
@@ -67,25 +76,37 @@ type Cmd struct {
 	Stderr io.Writer
 }
 
-func (e *Executor) RunCmd(p Pod, c Cmd) error {
-	pod, err := e.createPod(p, c)
+func (e *Executor) RunCmd(p Pod, c Cmd, timeout time.Duration) error {
+	kp, err := e.createPod(p, c)
 	if err != nil {
 		return err
 	}
-	ready := e.podWatcher.AddNotifyTask(p.Namespace, p.Name)
-	<-ready
-	err = e.attachPod(p, c)
-	e.client.Delete(context.TODO(), pod)
-	<-time.After(10 * time.Second)
+
+	err = e.waitPodReady(p, timeout)
+	if err == nil {
+		err = e.attachPod(p, c)
+	}
+	e.client.Delete(context.TODO(), kp)
 	return err
+}
+
+func (e *Executor) waitPodReady(p Pod, timeout time.Duration) error {
+	ready := e.podWatcher.AddNotifyTask(p.Namespace, p.Name)
+	select {
+	case <-ready:
+		return nil
+	case <-time.After(timeout):
+		return errCmdTimeout
+	}
 }
 
 func (e *Executor) createPod(p Pod, c Cmd) (*corev1.Pod, error) {
 	privileged := false
-	pod := &corev1.Pod{
+	kp := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      p.Name,
 			Namespace: p.Namespace,
+			Labels:    map[string]string{"app": executorLanchedPodMark},
 		},
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
@@ -105,7 +126,7 @@ func (e *Executor) createPod(p Pod, c Cmd) (*corev1.Pod, error) {
 			RestartPolicy: corev1.RestartPolicyOnFailure,
 		},
 	}
-	return pod, e.client.Create(context.TODO(), pod)
+	return kp, e.client.Create(context.TODO(), kp)
 }
 
 func (e *Executor) attachPod(p Pod, c Cmd) error {
@@ -119,9 +140,9 @@ func (e *Executor) attachPod(p Pod, c Cmd) error {
 		Namespace(p.Namespace).
 		SubResource("attach")
 	opts := &corev1.PodAttachOptions{
-		Stdin:     true,
-		Stdout:    true,
-		Stderr:    true,
+		Stdin:     c.Stdin != nil,
+		Stdout:    c.Stdout != nil,
+		Stderr:    c.Stderr != nil,
 		TTY:       false,
 		Container: p.Name,
 	}

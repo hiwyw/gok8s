@@ -20,9 +20,10 @@ func main() {
 	}
 
 	pod := exec.Pod{
-		Namespace: "default",
-		Name:      "counter-ben",
-		Image:     "bikecn81/counter",
+		Namespace:          "default",
+		Name:               "kubectl-ben",
+		Image:              "rancher/rancher-agent:v2.1.6",
+		ServiceAccountName: "cluster-readonly",
 	}
 
 	cfg, err := config.GetConfig()

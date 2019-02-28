@@ -63,9 +63,10 @@ func New(k8sCfg *rest.Config) (*Executor, error) {
 }
 
 type Pod struct {
-	Namespace string
-	Name      string
-	Image     string
+	Namespace          string
+	Name               string
+	Image              string
+	ServiceAccountName string
 }
 
 type Cmd struct {
@@ -102,6 +103,7 @@ func (e *Executor) waitPodReady(p Pod, timeout time.Duration) error {
 
 func (e *Executor) createPod(p Pod, c Cmd) (*corev1.Pod, error) {
 	privileged := false
+	termPeroidSeonds := int64(0)
 	kp := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      p.Name,
@@ -109,6 +111,9 @@ func (e *Executor) createPod(p Pod, c Cmd) (*corev1.Pod, error) {
 			Labels:    map[string]string{"app": executorLanchedPodMark},
 		},
 		Spec: corev1.PodSpec{
+			ServiceAccountName:            p.ServiceAccountName,
+			TerminationGracePeriodSeconds: &termPeroidSeonds,
+			RestartPolicy:                 corev1.RestartPolicyNever,
 			Containers: []corev1.Container{
 				{
 					TTY:     false,
@@ -123,7 +128,6 @@ func (e *Executor) createPod(p Pod, c Cmd) (*corev1.Pod, error) {
 					ImagePullPolicy: corev1.PullPolicy(corev1.PullAlways),
 				},
 			},
-			RestartPolicy: corev1.RestartPolicyOnFailure,
 		},
 	}
 	return kp, e.client.Create(context.TODO(), kp)

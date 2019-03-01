@@ -45,5 +45,6 @@ type Discovery interface {
 type Client interface {
 	Reader
 	Writer
+	Discovery
 	StatusClient
 }

@@ -6,6 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/version"
 )
 
 type ObjectKey = types.NamespacedName //"<namespace>/<name>"
@@ -35,6 +36,10 @@ type StatusClient interface {
 
 type StatusWriter interface {
 	Update(ctx context.Context, obj runtime.Object) error
+}
+
+type Discovery interface {
+	ServerVersion() (*version.Info, error)
 }
 
 type Client interface {

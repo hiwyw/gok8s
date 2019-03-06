@@ -3,6 +3,7 @@ package exec
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -88,6 +89,9 @@ func (e *Executor) RunCmd(p Pod, c Cmd, rw ResizeableStream, timeout time.Durati
 	}
 
 	err = e.waitPodReady(p, timeout)
+	fmt.Printf("----> pod is ready\n")
+	return nil
+
 	if err == nil {
 		err = e.execCmd(p, c, rw)
 	}
@@ -123,8 +127,8 @@ func (e *Executor) createPod(p Pod, c Cmd) (*corev1.Pod, error) {
 					Stdin:   false,
 					Name:    p.Name,
 					Image:   p.Image,
-					Command: []string{c.Path},
-					Args:    c.Args,
+					Command: []string{"/bin/bash"},
+					Args:    []string{"-c", "trap : TERM INT; sleep infinity & wait"},
 					SecurityContext: &corev1.SecurityContext{
 						Privileged: &privileged,
 					},

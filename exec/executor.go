@@ -77,11 +77,8 @@ type Pod struct {
 }
 
 type Cmd struct {
-	Path   string
-	Args   []string
-	Stdin  io.Reader
-	Stdout io.Writer
-	Stderr io.Writer
+	Path string
+	Args []string
 }
 
 func (e *Executor) RunCmd(p Pod, c Cmd, rw ResizeableStream, timeout time.Duration) error {

@@ -119,11 +119,12 @@ func (e *Executor) createPod(p Pod, c Cmd) (*corev1.Pod, error) {
 			RestartPolicy:                 corev1.RestartPolicyNever,
 			Containers: []corev1.Container{
 				{
-					TTY:   false,
-					Stdin: false,
-					Name:  p.Name,
-					Image: p.Image,
-					Args:  c.Args,
+					TTY:     false,
+					Stdin:   false,
+					Name:    p.Name,
+					Image:   p.Image,
+					Command: []string{c.Path},
+					Args:    c.Args,
 					SecurityContext: &corev1.SecurityContext{
 						Privileged: &privileged,
 					},

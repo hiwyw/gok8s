@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"os"
 	"time"
 
 	"github.com/zdnscloud/gok8s/client/config"
@@ -11,22 +9,18 @@ import (
 )
 
 func main() {
-	r, w := io.Pipe()
 	cmd := exec.Cmd{
-		Path:   "/bin/sh",
-		Stdin:  r,
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
+		Path: "/bin/sh",
 	}
 
 	pod := exec.Pod{
 		Namespace:          "default",
-		Name:               "kubectl-ben",
+		Name:               "kube-cmd-ben",
 		Image:              "rancher/rancher-agent:v2.1.6",
-		ServiceAccountName: "cluster-readonly",
+		ServiceAccountName: "default",
 	}
 
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfigFromFile("/home/vagrant/.kube/config")
 	if err != nil {
 		panic("get cfg failed:" + err.Error())
 	}
@@ -36,15 +30,7 @@ func main() {
 		panic("create executor failed:" + err.Error())
 	}
 
-	go func() {
-		defer w.Close()
-		_, err = io.Copy(w, os.Stdin)
-		if err != nil {
-			fmt.Printf("cannot copy from stdin: %v", err)
-		}
-	}()
-
-	if err := e.RunCmd(pod, cmd, 30*time.Second); err != nil {
+	if err := e.RunCmd(pod, cmd, nil, 30*time.Second); err != nil {
 		fmt.Printf("run cmd failed:%s\n", err.Error())
 	}
 }

@@ -136,6 +136,10 @@ func (c *client) GetNodeMetrics(name string, selector labels.Selector) (*metrics
 	return metrics, nil
 }
 
+func (c *client) RestClientForObject(obj runtime.Object) (rest.Interface, error) {
+	return c.typedClient.RestClientForObject(obj)
+}
+
 func (c *client) Create(ctx context.Context, obj runtime.Object) error {
 	_, ok := obj.(*unstructured.Unstructured)
 	if ok == false {

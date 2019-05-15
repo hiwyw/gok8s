@@ -8,7 +8,7 @@ import (
 )
 
 //copy code from k8s.io/kubernetes/pkg/printers
-func PodStatus(pod *corev1.Pod) string {
+func GetPodState(pod *corev1.Pod) string {
 	reason := string(pod.Status.Phase)
 	if pod.Status.Reason != "" {
 		reason = pod.Status.Reason

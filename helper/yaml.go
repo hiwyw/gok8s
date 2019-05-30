@@ -18,7 +18,7 @@ func CreateResourceFromYaml(cli client.Client, yaml string) error {
 
 func DeleteResourceFromYaml(cli client.Client, yaml string) error {
 	return mapOnYamlDocument(yaml, func(ctx context.Context, obj runtime.Object) error {
-		return cli.Delete(ctx, obj, nil)
+		return cli.Delete(ctx, obj)
 	})
 }
 

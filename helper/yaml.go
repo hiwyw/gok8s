@@ -30,6 +30,11 @@ func UpdateResourceFromYaml(cli client.Client, yaml string) error {
 func mapOnYamlDocument(yaml string, fn func(context.Context, runtime.Object) error) error {
 	decode := scheme.Codecs.UniversalDeserializer().Decode
 	for _, doc := range strings.Split(yaml, YamlDelimiter) {
+		doc = strings.TrimSpace(doc)
+		if doc == "" {
+			continue
+		}
+
 		obj, _, err := decode([]byte(doc), nil, nil)
 		if err != nil {
 			return err

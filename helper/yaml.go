@@ -3,7 +3,6 @@ package helper
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"strings"
 
@@ -35,7 +34,6 @@ func mapOnYamlDocument(data string, fn func(context.Context, runtime.Object) err
 	reader := yaml.NewYAMLReader(bufio.NewReader(strings.NewReader(data)))
 	for {
 		doc, err := reader.Read()
-		fmt.Printf("---> doc:%s, err:%v\n", string(doc), err)
 		if err != nil {
 			if err == io.EOF {
 				return nil

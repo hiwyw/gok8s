@@ -73,8 +73,6 @@ func mapOnRuntimeObject(data string, fn func(context.Context, runtime.Object) er
 					return err
 				}
 			}
-		} else {
-			return err
 		}
 
 		if err := fn(context.TODO(), obj); err != nil {

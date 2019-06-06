@@ -200,15 +200,16 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:705095794b3c33ee93905578d6612a4382a931e59d1c260dbd132943fcaaf42b"
+  digest = "1:7b8393745ae2b7d14496364b6715f27a15a0178d75e7b4cd6682443cae0aaa44"
   name = "github.com/zdnscloud/cement"
   packages = [
     "log",
     "log/log4go",
+    "slice",
     "unittest",
   ]
   pruneopts = "UT"
-  revision = "3e9edaca4e5a437983a7968f818829084d30a77a"
+  revision = "4e659246475c1b00f2644fc6860e49c0c3cdf2b9"
 
 [[projects]]
   branch = "master"
@@ -645,6 +646,7 @@
     "github.com/golang/glog",
     "github.com/google/lvmd/proto",
     "github.com/zdnscloud/cement/log",
+    "github.com/zdnscloud/cement/slice",
     "github.com/zdnscloud/cement/unittest",
     "google.golang.org/grpc",
     "google.golang.org/grpc/connectivity",

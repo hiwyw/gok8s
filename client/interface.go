@@ -5,12 +5,9 @@ import (
 	"time"
 
 	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/version"
 	"k8s.io/client-go/rest"
-	metricsapi "k8s.io/metrics/pkg/apis/metrics"
 )
 
 type ObjectKey = types.NamespacedName //"<namespace>/<name>"
@@ -43,20 +40,10 @@ type StatusWriter interface {
 	Update(ctx context.Context, obj runtime.Object) error
 }
 
-type Discovery interface {
-	ServerVersion() (*version.Info, error)
-}
-
-type Metrics interface {
-	GetNodeMetrics(name string, selector labels.Selector) (*metricsapi.NodeMetricsList, error)
-}
-
 type Client interface {
 	Reader
 	Writer
-	Discovery
 	StatusClient
-	Metrics
 
 	RestClientForObject(obj runtime.Object, timeout time.Duration) (rest.Interface, error)
 }

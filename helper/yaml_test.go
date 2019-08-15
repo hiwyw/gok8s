@@ -1,8 +1,10 @@
 package helper
 
 import (
-	//"fmt"
+	"context"
 	ut "github.com/zdnscloud/cement/unittest"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"testing"
 )
 
@@ -44,4 +46,34 @@ data:
 			ut.Equal(t, doc, tc.expectedDocs[i])
 		}
 	}
+}
+
+func TestYamlObjectParse(t *testing.T) {
+	yaml := `
+# Generated from 'kube-scheduler.rules' group from https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/prometheus-rules.yaml
+# Do not change in-place! In order to change this file first read following link:
+# https://github.com/helm/charts/tree/master/stable/prometheus-operator/hack
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: counter
+spec:
+  containers:
+  - name: counter
+    image: bikecn81/counter
+    ports:
+    - containerPort: 8888
+`
+
+	objects := []runtime.Object{}
+	err := MapOnRuntimeObject(yaml, func(ctx_ context.Context, obj runtime.Object) error {
+		objects = append(objects, obj)
+		return nil
+	})
+	ut.Assert(t, err == nil, "")
+	ut.Equal(t, len(objects), 1)
+	pod, ok := objects[0].(*corev1.Pod)
+	ut.Assert(t, ok, "should uncode to a pod")
+	ut.Equal(t, pod.Name, "counter")
 }

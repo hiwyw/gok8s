@@ -12,7 +12,7 @@ import (
 	"k8s.io/client-go/restmapper"
 )
 
-const MinimalAPIGroupResourceCount = 19
+const MinimalAPIGroupResourceCount = 18
 
 func NewDiscoveryRESTMapper(c *rest.Config) (meta.RESTMapper, error) {
 	dc := discovery.NewDiscoveryClientForConfigOrDie(c)

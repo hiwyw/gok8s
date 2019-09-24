@@ -8,25 +8,14 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/discovery/cached"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/restmapper"
 )
 
-const MinimalAPIGroupResourceCount = 19
-
 func NewDiscoveryRESTMapper(c *rest.Config) (meta.RESTMapper, error) {
 	dc := discovery.NewDiscoveryClientForConfigOrDie(c)
-	var gr []*restmapper.APIGroupResources
-	var err error
-	for {
-		gr, err = restmapper.GetAPIGroupResources(dc)
-		if err != nil {
-			return nil, err
-		} else if len(gr) >= MinimalAPIGroupResourceCount {
-			break
-		}
-	}
-	return restmapper.NewDiscoveryRESTMapper(gr), nil
+	return restmapper.NewDeferredDiscoveryRESTMapper(cached.NewMemCacheClient(dc)), nil
 }
 
 func GVKForObject(obj runtime.Object, scheme *runtime.Scheme) (schema.GroupVersionKind, error) {

@@ -8,14 +8,12 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/discovery"
-	"k8s.io/client-go/discovery/cached"
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/restmapper"
 )
 
 func NewDiscoveryRESTMapper(c *rest.Config) (meta.RESTMapper, error) {
 	dc := discovery.NewDiscoveryClientForConfigOrDie(c)
-	return restmapper.NewDeferredDiscoveryRESTMapper(cached.NewMemCacheClient(dc)), nil
+	return NewDeferredDiscoveryRESTMapper(NewMemCacheClient(dc)), nil
 }
 
 func GVKForObject(obj runtime.Object, scheme *runtime.Scheme) (schema.GroupVersionKind, error) {

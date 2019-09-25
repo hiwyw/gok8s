@@ -493,11 +493,10 @@
   revision = "86fb29eff6288413d76bd8506874fddd9fccdff0"
 
 [[projects]]
-  digest = "1:6b2c5636e8e7b26fd751607a5ec9bffd2af8bdc5001b6c7239e88769f277fccf"
+  digest = "1:43ca76a6509836a85bab6dfd7490e46a950e2990cf96faabd0a552444d6b144c"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
-    "discovery/cached",
     "dynamic",
     "kubernetes",
     "kubernetes/scheme",
@@ -540,7 +539,6 @@
     "plugin/pkg/client/auth/exec",
     "rest",
     "rest/watch",
-    "restmapper",
     "tools/auth",
     "tools/cache",
     "tools/clientcmd",
@@ -646,6 +644,7 @@
   input-imports = [
     "github.com/golang/glog",
     "github.com/google/lvmd/proto",
+    "github.com/googleapis/gnostic/OpenAPIv2",
     "github.com/zdnscloud/cement/log",
     "github.com/zdnscloud/cement/slice",
     "github.com/zdnscloud/cement/unittest",
@@ -665,18 +664,17 @@
     "k8s.io/apimachinery/pkg/runtime/serializer",
     "k8s.io/apimachinery/pkg/selection",
     "k8s.io/apimachinery/pkg/types",
+    "k8s.io/apimachinery/pkg/util/runtime",
     "k8s.io/apimachinery/pkg/util/wait",
     "k8s.io/apimachinery/pkg/util/yaml",
     "k8s.io/apimachinery/pkg/version",
     "k8s.io/apimachinery/pkg/watch",
     "k8s.io/client-go/discovery",
-    "k8s.io/client-go/discovery/cached",
     "k8s.io/client-go/dynamic",
     "k8s.io/client-go/kubernetes",
     "k8s.io/client-go/kubernetes/scheme",
     "k8s.io/client-go/kubernetes/typed/core/v1",
     "k8s.io/client-go/rest",
-    "k8s.io/client-go/restmapper",
     "k8s.io/client-go/tools/cache",
     "k8s.io/client-go/tools/clientcmd",
     "k8s.io/client-go/tools/record",

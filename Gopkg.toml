@@ -45,6 +45,18 @@
   name = "sigs.k8s.io/testing_frameworks"
   version = "0.1.1"
 
+[[constraint]]
+  branch = "release-1.13"
+  name = "k8s.io/apiextensions-apiserver"
+
+[[constraint]]
+  branch = "release-1.13"
+  name = "k8s.io/kube-aggregator"
+
+[[constraint]]
+  branch = "release-1.13"
+  name = "k8s.io/metrics"
+
 [prune]
   go-tests = true
   unused-packages = true

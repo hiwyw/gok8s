@@ -18,11 +18,10 @@ require (
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	k8s.io/api v0.17.2
-	k8s.io/apiextensions-apiserver v0.0.0-20200131201446-6910daba737d
-	k8s.io/apimachinery v0.17.3-beta.0.0.20200131192631-731dcecc2054
+	k8s.io/apiextensions-apiserver v0.17.2
+	k8s.io/apimachinery v0.17.2
 	k8s.io/client-go v0.17.2
-	k8s.io/kube-aggregator v0.0.0-20200131200134-d62c64b672cc
-	k8s.io/metrics v0.0.0-20200131201757-ffbb7a48f604
-	k8s.io/utils v0.0.0-20200124190032-861946025e34 // indirect
+	k8s.io/kube-aggregator v0.17.2
+	k8s.io/metrics v0.17.2
 	sigs.k8s.io/testing_frameworks v0.1.2
 )

@@ -62,7 +62,7 @@ func (uc *unstructuredClient) Patch(_ context.Context, obj runtime.Object, typ t
 	if err != nil {
 		return err
 	}
-	i, err := r.Patch(u.GetName(), typ, data, metav1.PatchOptions{})
+	i, err := r.Patch(u.GetName(), typ, data, metav1.UpdateOptions{})
 	if err != nil {
 		return err
 	}

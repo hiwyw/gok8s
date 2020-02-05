@@ -55,10 +55,6 @@ func (d *memCacheClient) ServerResources() ([]*metav1.APIResourceList, error) {
 	return discovery.ServerResources(d)
 }
 
-func (d *memCacheClient) ServerGroupsAndResources() ([]*metav1.APIGroup, []*metav1.APIResourceList, error) {
-	return discovery.ServerGroupsAndResources(d)
-}
-
 func (d *memCacheClient) ServerGroups() (*metav1.APIGroupList, error) {
 	d.lock.RLock()
 	defer d.lock.RUnlock()
